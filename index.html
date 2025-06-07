@@ -1,9 +1,609 @@
-<html>
-    <head>
-        <title>My First Web Page</title>
-    </head>
-    <body>
-        <h1>Welcome to my first web page</h1>
-        <p>This is a simple web page created with HTML.</p>
-    </body>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Mini App 测试</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--tg-theme-hint-color, #e1e5e9);
+        }
+        
+        .section h2 {
+            margin-top: 0;
+            color: var(--tg-theme-text-color, #000000);
+            font-size: 18px;
+        }
+        
+        .info-item {
+            margin: 8px 0;
+            padding: 8px;
+            background: var(--tg-theme-bg-color, #ffffff);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: var(--tg-theme-hint-color, #6c757d);
+        }
+        
+        .button {
+            background: var(--tg-theme-button-color, #007bff);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 8px 4px;
+            transition: opacity 0.2s;
+        }
+        
+        .button:hover {
+            opacity: 0.8;
+        }
+        
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .button.secondary {
+            background: var(--tg-theme-secondary-bg-color, #6c757d);
+        }
+        
+        .button.danger {
+            background: #dc3545;
+        }
+        
+        .input-group {
+            margin: 12px 0;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+        
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--tg-theme-hint-color, #e1e5e9);
+            border-radius: 6px;
+            font-size: 14px;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            box-sizing: border-box;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .json-display {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Telegram Mini App 测试</h1>
+        
+        <!-- 1. 用户初始数据和验证信息 -->
+        <div class="section">
+            <h2>📱 用户初始数据</h2>
+            <div id="user-info">
+                <div class="info-item">
+                    <span class="info-label">加载状态:</span>
+                    <span id="loading-status">正在初始化...</span>
+                </div>
+            </div>
+            <button class="button" onclick="refreshUserData()">🔄 刷新用户数据</button>
+            <button class="button secondary" onclick="showInitData()">📋 显示原始初始化数据</button>
+        </div>
+        
+        <!-- 2. Bot 交互 -->
+        <div class="section">
+            <h2>🤖 Bot 交互</h2>
+            <div class="input-group">
+                <label for="message-input">发送消息给 Bot:</label>
+                <textarea id="message-input" placeholder="输入要发送给bot的消息..." rows="3"></textarea>
+            </div>
+            <button class="button" onclick="sendDataToBot()">📤 发送数据到 Bot</button>
+            <button class="button secondary" onclick="showAlert()">⚠️ 显示警告</button>
+            <button class="button secondary" onclick="showConfirm()">❓ 显示确认</button>
+            <div id="bot-status"></div>
+        </div>
+        
+        <!-- 3. 支付功能 -->
+        <div class="section">
+            <h2>💰 支付功能</h2>
+            <div class="input-group">
+                <label for="invoice-url">Invoice URL:</label>
+                <input type="text" id="invoice-url" placeholder="输入支付链接..." 
+                       value="https://t.me/invoice/example">
+            </div>
+            <button class="button" onclick="openInvoice()">💳 打开支付</button>
+            <div id="payment-status"></div>
+        </div>
+        
+        <!-- 4. Mini App 控制 -->
+        <div class="section">
+            <h2>🎮 Mini App 控制</h2>
+            <button class="button" onclick="expandApp()">📱 展开应用</button>
+            <button class="button secondary" onclick="showPopup()">🪟 显示弹窗</button>
+            <button class="button secondary" onclick="hapticFeedback()">📳 触觉反馈</button>
+            <button class="button danger" onclick="closeApp()">❌ 关闭 Mini App</button>
+        </div>
+        
+        <!-- 调试信息 -->
+        <div class="section">
+            <h2>🔧 调试信息</h2>
+            <div id="debug-info" class="json-display"></div>
+            <button class="button secondary" onclick="clearDebug()">🧹 清除调试信息</button>
+        </div>
+    </div>
+
+    <script>
+        // 立即显示脚本开始加载的状态
+        console.log('Telegram Mini App 脚本开始加载...');
+        
+        // 全局变量
+        let tg = window.Telegram?.WebApp || null;
+        let debugLog = [];
+        let isAppReady = false;
+        
+        // 添加调试日志
+        function addDebugLog(message, data = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            if (data) {
+                debugLog.push(`${logEntry}\n${JSON.stringify(data, null, 2)}`);
+            } else {
+                debugLog.push(logEntry);
+            }
+            updateDebugDisplay();
+        }
+        
+        function updateDebugDisplay() {
+            document.getElementById('debug-info').textContent = debugLog.slice(-10).join('\n\n');
+        }
+        
+        function clearDebug() {
+            debugLog = [];
+            updateDebugDisplay();
+        }
+        
+        // 显示状态消息
+        function showStatus(elementId, message, type = 'info') {
+            const statusDiv = document.getElementById(elementId);
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 5000);
+        }
+        
+        // 1. 初始化和用户数据
+        function initializeApp() {
+            addDebugLog('开始初始化 Telegram Web App');
+            
+            try {
+                // 检查 Telegram WebApp 可用性
+                if (!tg) {
+                    throw new Error('Telegram WebApp 对象不可用');
+                }
+                
+                // 启用关闭按钮确认
+                if (typeof tg.enableClosingConfirmation === 'function') {
+                    tg.enableClosingConfirmation();
+                    addDebugLog('关闭确认已启用');
+                }
+                
+                // 设置头部颜色
+                if (typeof tg.setHeaderColor === 'function') {
+                    tg.setHeaderColor('#2481cc');
+                    addDebugLog('头部颜色已设置');
+                }
+                
+                // 展开应用
+                if (typeof tg.expand === 'function') {
+                    tg.expand();
+                    addDebugLog('应用已展开');
+                }
+                
+                // 显示用户数据
+                displayUserData();
+                
+                // 记录详细的环境信息
+                const envInfo = {
+                    version: tg.version || '未知',
+                    platform: tg.platform || '未知',
+                    colorScheme: tg.colorScheme || '未知',
+                    isVersionAtLeast6: tg.isVersionAtLeast ? tg.isVersionAtLeast('6.0') : '无法检测',
+                    isVersionAtLeast7: tg.isVersionAtLeast ? tg.isVersionAtLeast('7.0') : '无法检测',
+                    hasInitData: !!tg.initData,
+                    hasUser: !!(tg.initDataUnsafe && tg.initDataUnsafe.user),
+                    isExpanded: tg.isExpanded || false,
+                    viewportHeight: tg.viewportHeight || '未知',
+                    viewportStableHeight: tg.viewportStableHeight || '未知'
+                };
+                
+                addDebugLog('Telegram Web App 初始化完成', envInfo);
+                
+            } catch (error) {
+                addDebugLog('初始化过程中发生错误', error.message);
+                throw error;
+            }
+        }
+        
+        function displayUserData() {
+            const userInfoDiv = document.getElementById('user-info');
+            const loadingStatus = document.getElementById('loading-status');
+            
+            try {
+                if (!tg) {
+                    throw new Error('Telegram WebApp 对象未初始化');
+                }
+                
+                // 检查是否在 Telegram 环境中
+                const inTelegramEnv = !!(tg.initData || (tg.initDataUnsafe && tg.initDataUnsafe.user));
+                
+                if (inTelegramEnv) {
+                    loadingStatus.textContent = '✅ 已加载 (Telegram 环境)';
+                } else {
+                    loadingStatus.textContent = '⚠️ 已加载 (浏览器环境)';
+                }
+                
+                const user = tg.initDataUnsafe?.user || {};
+                const userInfo = `
+                    <div class="info-item">
+                        <span class="info-label">环境:</span> ${inTelegramEnv ? 'Telegram Mini App' : '浏览器测试'}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">用户ID:</span> ${user.id || '未知'}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">姓名:</span> ${((user.first_name || '') + ' ' + (user.last_name || '')).trim() || '未知'}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">用户名:</span> @${user.username || '无'}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">语言:</span> ${user.language_code || '未知'}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">是否高级用户:</span> ${user.is_premium ? '是' : '否'}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">主题:</span> ${tg.colorScheme || '未知'}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">平台:</span> ${tg.platform || '未知'}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">版本:</span> ${tg.version || '未知'}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">应用状态:</span> ${isAppReady ? '✅ 就绪' : '⏳ 准备中'}
+                    </div>
+                `;
+                
+                userInfoDiv.innerHTML = userInfo;
+                addDebugLog('用户数据显示成功', { 
+                    user: user, 
+                    inTelegramEnv: inTelegramEnv,
+                    isAppReady: isAppReady
+                });
+                
+            } catch (error) {
+                loadingStatus.textContent = '❌ 加载失败';
+                addDebugLog('显示用户数据时出错', error.message);
+                
+                // 显示错误信息但不阻止应用运行
+                const errorInfo = `
+                    <div class="info-item">
+                        <span class="info-label">错误:</span> ${error.message}
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">建议:</span> 请在 Telegram 中打开此 Mini App
+                    </div>
+                `;
+                userInfoDiv.innerHTML = errorInfo;
+            }
+        }
+        
+        function refreshUserData() {
+            addDebugLog('刷新用户数据');
+            displayUserData();
+            showStatus('user-info', '✅ 用户数据已刷新', 'success');
+        }
+        
+        function showInitData() {
+            const initData = tg.initData;
+            addDebugLog('显示原始初始化数据', { 
+                initData: initData,
+                initDataUnsafe: tg.initDataUnsafe 
+            });
+            
+            if (initData) {
+                tg.showPopup({
+                    title: '原始初始化数据',
+                    message: `数据长度: ${initData.length} 字符\n\n${initData.substring(0, 200)}${initData.length > 200 ? '...' : ''}`,
+                    buttons: [{type: 'ok'}]
+                });
+            } else {
+                tg.showAlert('没有初始化数据可显示');
+            }
+        }
+        
+        // 2. Bot 交互
+        function sendDataToBot() {
+            const message = document.getElementById('message-input').value;
+            
+            if (!message.trim()) {
+                showStatus('bot-status', '❌ 请输入消息内容', 'error');
+                return;
+            }
+            
+            try {
+                const dataToSend = {
+                    message: message,
+                    user_id: tg.initDataUnsafe.user?.id,
+                    timestamp: Date.now()
+                };
+                
+                tg.sendData(JSON.stringify(dataToSend));
+                addDebugLog('发送数据到 Bot', dataToSend);
+                showStatus('bot-status', '✅ 数据已发送到 Bot', 'success');
+                
+                // 清空输入框
+                document.getElementById('message-input').value = '';
+                
+            } catch (error) {
+                addDebugLog('发送数据到 Bot 时出错', error.message);
+                showStatus('bot-status', '❌ 发送失败: ' + error.message, 'error');
+            }
+        }
+        
+        function showAlert() {
+            tg.showAlert('这是一个测试警告消息！', () => {
+                addDebugLog('用户关闭了警告');
+                showStatus('bot-status', '✅ 警告已关闭', 'info');
+            });
+        }
+        
+        function showConfirm() {
+            tg.showConfirm('您确定要执行此操作吗？', (confirmed) => {
+                const result = confirmed ? '确认' : '取消';
+                addDebugLog(`用户${result}了确认对话框`);
+                showStatus('bot-status', `✅ 用户选择: ${result}`, 'info');
+            });
+        }
+        
+        // 3. 支付功能
+        function openInvoice() {
+            const invoiceUrl = document.getElementById('invoice-url').value;
+            
+            if (!invoiceUrl.trim()) {
+                showStatus('payment-status', '❌ 请输入支付链接', 'error');
+                return;
+            }
+            
+            try {
+                tg.openInvoice(invoiceUrl, (status) => {
+                    addDebugLog('支付状态回调', { status, url: invoiceUrl });
+                    
+                    switch (status) {
+                        case 'paid':
+                            showStatus('payment-status', '✅ 支付成功！', 'success');
+                            break;
+                        case 'cancelled':
+                            showStatus('payment-status', '❌ 支付已取消', 'error');
+                            break;
+                        case 'failed':
+                            showStatus('payment-status', '❌ 支付失败', 'error');
+                            break;
+                        case 'pending':
+                            showStatus('payment-status', '⏳ 支付处理中...', 'info');
+                            break;
+                        default:
+                            showStatus('payment-status', `状态: ${status}`, 'info');
+                    }
+                });
+                
+                addDebugLog('打开支付页面', { url: invoiceUrl });
+                showStatus('payment-status', '💳 支付页面已打开', 'info');
+                
+            } catch (error) {
+                addDebugLog('打开支付时出错', error.message);
+                showStatus('payment-status', '❌ 打开支付失败: ' + error.message, 'error');
+            }
+        }
+        
+        // 4. Mini App 控制
+        function expandApp() {
+            tg.expand();
+            addDebugLog('应用已展开');
+            showStatus('debug-info', '✅ 应用已展开', 'success');
+        }
+        
+        function showPopup() {
+            tg.showPopup({
+                title: '测试弹窗',
+                message: '这是一个测试弹窗，用于演示 Telegram Mini App 的弹窗功能。',
+                buttons: [
+                    {id: 'ok', type: 'ok'},
+                    {id: 'cancel', type: 'cancel'},
+                    {id: 'custom', type: 'default', text: '自定义按钮'}
+                ]
+            }, (buttonId) => {
+                addDebugLog('弹窗按钮点击', { buttonId });
+                showStatus('debug-info', `✅ 点击了: ${buttonId}`, 'info');
+            });
+        }
+        
+        function hapticFeedback() {
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('medium');
+                addDebugLog('触发触觉反馈');
+                showStatus('debug-info', '📳 触觉反馈已触发', 'success');
+            } else {
+                showStatus('debug-info', '❌ 设备不支持触觉反馈', 'error');
+            }
+        }
+        
+        function closeApp() {
+            addDebugLog('用户请求关闭应用');
+            tg.showConfirm('确定要关闭 Mini App 吗？', (confirmed) => {
+                if (confirmed) {
+                    addDebugLog('用户确认关闭应用');
+                    tg.close();
+                } else {
+                    addDebugLog('用户取消关闭应用');
+                }
+            });
+        }
+        
+        // 事件监听器
+        tg.onEvent('mainButtonClicked', () => {
+            addDebugLog('主按钮被点击');
+        });
+        
+        tg.onEvent('backButtonClicked', () => {
+            addDebugLog('后退按钮被点击');
+        });
+        
+        tg.onEvent('settingsButtonClicked', () => {
+            addDebugLog('设置按钮被点击');
+        });
+        
+        tg.onEvent('invoiceClosed', (eventData) => {
+            addDebugLog('支付页面关闭', eventData);
+        });
+        
+        tg.onEvent('popupClosed', (eventData) => {
+            addDebugLog('弹窗关闭', eventData);
+        });
+        
+        // 确保 Telegram WebApp SDK 完全加载
+        function waitForTelegramWebApp() {
+            return new Promise((resolve) => {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    resolve();
+                } else {
+                    // 如果 SDK 还没加载，等待一段时间后重试
+                    setTimeout(() => waitForTelegramWebApp().then(resolve), 100);
+                }
+            });
+        }
+        
+        // 页面和所有资源加载完成后初始化
+        window.addEventListener('load', async () => {
+            addDebugLog('页面所有资源加载完成');
+            
+            try {
+                // 等待 Telegram WebApp SDK 加载
+                await waitForTelegramWebApp();
+                addDebugLog('Telegram WebApp SDK 已加载');
+                
+                // 重新获取 WebApp 对象（确保是最新的）
+                tg = window.Telegram.WebApp;
+                
+                // 检查是否在 Telegram 环境中
+                if (!tg.initData && !tg.initDataUnsafe.user) {
+                    addDebugLog('警告：未检测到 Telegram 环境，某些功能可能无法正常工作');
+                }
+                
+                // 初始化应用
+                initializeApp();
+                
+                // 设置主按钮
+                setupMainButton();
+                
+                // 通知 Telegram 客户端 Mini App 已准备就绪
+                tg.ready();
+                isAppReady = true;
+                addDebugLog('已调用 tg.ready() - Mini App 准备就绪');
+                
+                // 刷新用户界面以显示最新状态
+                displayUserData();
+                
+            } catch (error) {
+                addDebugLog('初始化过程中发生错误', error.message);
+                document.getElementById('loading-status').textContent = '❌ 初始化失败';
+            }
+        });
+        
+        // 设置主按钮
+        function setupMainButton() {
+            try {
+                tg.MainButton.setText('发送测试数据');
+                tg.MainButton.show();
+                tg.MainButton.onClick(() => {
+                    const testData = {
+                        action: 'test',
+                        timestamp: Date.now(),
+                        user_id: tg.initDataUnsafe.user?.id
+                    };
+                    tg.sendData(JSON.stringify(testData));
+                    addDebugLog('通过主按钮发送测试数据', testData);
+                });
+                addDebugLog('主按钮设置完成');
+            } catch (error) {
+                addDebugLog('设置主按钮时发生错误', error.message);
+            }
+        }
+    </script>
+</body>
 </html>
