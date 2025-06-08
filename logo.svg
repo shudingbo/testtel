@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="60px" viewBox="0 0 200 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Logo</title>
+    <g id="Logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <text id="9D.BET" font-family="Arial-BoldMT, Arial" font-size="36" font-weight="bold" fill="#00c087">
+            <tspan x="10" y="43">Happy Winner</tspan>
+        </text>
+        <text id=".BR" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#FFFFFF">
+            <tspan x="150" y="43">.BR</tspan>
+        </text>
+    </g>
+</svg>

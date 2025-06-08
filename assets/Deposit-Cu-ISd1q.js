@@ -1,0 +1,1 @@
+import{_ as o,b as n,f as s,t as a,o as c}from"./index-B-w5q43E.js";const i={},r={class:"deposit-page"},d={class:"container"};function p(e,t){return c(),n("div",r,[s("div",d,[s("h1",null,a(e.$t("account.deposit")),1),t[0]||(t[0]=s("p",null,"This page is under construction.",-1))])])}const l=o(i,[["render",p],["__scopeId","data-v-6cf2dd78"]]);export{l as default};

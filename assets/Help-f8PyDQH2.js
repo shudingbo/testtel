@@ -1,0 +1,1 @@
+import{_ as n,b as o,f as e,t as a,o as c}from"./index-tmk96ooy.js";const r={},l={class:"help-page"},d={class:"container"};function i(t,s){return c(),o("div",l,[e("div",d,[e("h1",null,a(t.$t("nav.help")),1),s[0]||(s[0]=e("p",null,"This page is under construction.",-1))])])}const _=n(r,[["render",i],["__scopeId","data-v-8d9d17ec"]]);export{_ as default};

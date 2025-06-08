@@ -1,0 +1,1 @@
+import{_ as t,b as a,f as e,t as n,o as r}from"./index-B-w5q43E.js";const c={},i={class:"profile-page"},l={class:"container"};function d(s,o){return r(),a("div",i,[e("div",l,[e("h1",null,n(s.$t("account.profile")),1),o[0]||(o[0]=e("p",null,"This page is under construction.",-1))])])}const p=t(c,[["render",d],["__scopeId","data-v-d434a2ad"]]);export{p as default};
