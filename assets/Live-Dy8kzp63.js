@@ -1,0 +1,1 @@
+import{d as o,b as n,f as e,o as t,_ as a}from"./index-Zp6uYDem.js";const i={class:"live-page"},c=o({__name:"Live",setup(r){return(_,s)=>(t(),n("div",i,s[0]||(s[0]=[e("div",{class:"container"},[e("h1",null,"Live Casino"),e("p",null,"This page is under construction.")],-1)])))}}),d=a(c,[["__scopeId","data-v-6dbb8b98"]]);export{d as default};

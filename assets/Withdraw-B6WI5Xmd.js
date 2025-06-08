@@ -1,0 +1,1 @@
+import{_ as a,b as o,f as t,t as n,o as c}from"./index-Zp6uYDem.js";const r={},i={class:"withdraw-page"},d={class:"container"};function _(e,s){return c(),o("div",i,[t("div",d,[t("h1",null,n(e.$t("account.withdraw")),1),s[0]||(s[0]=t("p",null,"This page is under construction.",-1))])])}const p=a(r,[["render",_],["__scopeId","data-v-6be27d0c"]]);export{p as default};

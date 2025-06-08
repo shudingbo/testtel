@@ -1,0 +1,1 @@
+import{_ as n,b as e,f as o,t as a,o as r}from"./index-Zp6uYDem.js";const c={},i={class:"promotions-page"},d={class:"container"};function _(t,s){return r(),e("div",i,[o("div",d,[o("h1",null,a(t.$t("nav.promotions")),1),s[0]||(s[0]=o("p",null,"This page is under construction.",-1))])])}const p=n(c,[["render",_],["__scopeId","data-v-d6d75135"]]);export{p as default};
